@@ -1,4 +1,4 @@
-# scriptswitch v0.1.0
+# scriptswitch v0.1.1
 
 Super simple (and tiny, 417 bytes gzipped) conditional script loading manager for browsers.
 
@@ -22,7 +22,7 @@ Just pass a dynamically built configuration object into `scriptswitch`. Each pro
 If the value is `null`, the script will not be loaded. Otherwise, the configuration options you provide will be used to
 load the script.
 
-```
+```javascript
 scriptswitch({
 	"core.js": {
 		async:false
@@ -47,12 +47,14 @@ The `async:false` scripts complete loading in the order provided. Other scripts 
 
 `scriptswitch` returns an array of `Promise` for all the loading scripts, i.e:
 
-```
+```javascript
 Promise.all(scriptswitch(<config object>)).then(arrayOfScriptDOMElements => ...);
 ```
 
 
 # Release History (reverse chronological order)
+
+2018-08-05 v0.1.1 Documentation enhancements.
 
 2018-08-05 v0.1.0 First public release.
 
