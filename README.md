@@ -12,7 +12,7 @@ Supports sequenced synchronous loading for scripts that are dependent on other s
 
 Currently only browser usage is supported, use the file `scriptswitch.js` in the browser directory.
 
-```
+```javascript
 <script src="scriptswitch.js"></script>
 ```
 
