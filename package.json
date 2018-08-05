@@ -1,0 +1,24 @@
+{
+	"name": "scriptswitch",
+	"version": "0.1.0",
+	"description": "Super simple (and tiny, 417 bytes gzipped) conditional script loading manager for browsers.",
+	"private": false,
+	"isomorphic": false,
+	"keywords": [],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/scriptswitch/scriptswitch.git"
+	},
+	"scripts": {
+		"prepare": "cp index.js browser/scriptswitch.js"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"chai": "^4.1.0",
+		"mocha": "^3.4.2"
+	},
+	"engines": {
+		"node": "9.x"
+	}
+}
