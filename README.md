@@ -10,10 +10,10 @@ Supports asynchronous loading or sequenced synchronous loading for scripts that 
 
 `npm install scriptswitch`
 
-Use the file `scriptswitch.js` in the browser directory for browsers.
+Use the file `scriptswitch.js` in the browser directory for browsers. You MUST provide the id "scriptswitch".
 
 ```javascript
-<script src="scriptswitch.js"></script>
+<script id="scriptswitch" src="scriptswitch.js"></script>
 ```
 
 Use regular NodeJS syntax for NodeJS:
