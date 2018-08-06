@@ -30,24 +30,69 @@
 		}
 	}
 	
-	function scriptswitch(scripts) {
+	var isBrowser = typeof(window)!=="undefined";
+	
+	function scriptswitch(scripts,{scope}={}) {
 		scripts || (scripts={});
 		var promises = [],
 			asynchronous = [],
 			synchronous = [],
 			paths = Object.keys(scripts),
-			me = document.getElementById("scriptswitch"),
-			parent = me.parentNode;
-	
+			me = isBrowser ? document.getElementById("scriptswitch") : null,
+			parent = me ? me.parentNode  : null;
+		function load(spec) {
+			for(var key in spec) {
+				if(key!=="script") {
+					var value = spec[key];
+					if(value!=false && isBrowser) spec.script.setAttribute(key,value);
+				}
+			}
+			if(isBrowser) spec.script.onload = spec.onload;
+			if(spec.next) {
+				var onload = spec.onload;
+				if(isBrowser) {
+					spec.script.onload = (ev) => {
+						onload.call(spec.script,ev);
+						load(spec.next);
+					}
+				} else {
+					if(onload) {
+						onload({target:spec.next});
+						load(spec.next);
+					}
+				}
+			}
+			if(isBrowser) {
+				parent.insertBefore(spec.script,me); 
+			} else if(spec.onload) {
+				if(spec.async) setTimeout(() => spec.onload({target:spec})); // make it look async
+				else spec.onload({target:spec});
+			}
+		}
 		for(const path in scripts) {
 			if(!scripts[path]) continue;
 			promises.push(new Promise(function(resolve) {
 				var spec = Object.assign({},scripts[path]),
 					onload = spec.onload;
 				spec.src = path;
-				spec.script =  document.createElement("script");
+				if(isBrowser) {
+					spec.script =  document.createElement("script");
+				} else {
+					if(!scope) {
+						throw new Error("'scope' is a required scriptswitch option for NodeJS use")
+					}
+					if(!spec.as) {
+						throw new Error("'import' is a required script property for NodeJS use")
+					}
+					scope[spec.as] = require(require("path").resolve(__dirname,spec.src));
+					spec.script = `${scope[spec.as]}`;
+				}
 				spec.onload = (ev) => {
-					resolve(spec.script);
+					if(isBrowser) {
+						resolve(spec.script);
+					} else {
+						resolve(spec);
+					}
 					if(onload) {
 						onload(ev);
 					}
@@ -59,33 +104,15 @@
 				}
 			}));
 		}
-		function load(spec) {
-			for(var key in spec) {
-				if(key!=="next" && key!=="script") {
-					var value = spec[key];
-					if(value!=false) spec.script.setAttribute(key,value);
-				}
-			}
-			spec.script.onload = spec.onload;
-			if(spec.next) {
-				var onload = spec.onload;
-				spec.script.onload = (ev) => {
-					onload.call(spec.script,ev);
-					load(spec.next);
-				}
-			}
-			parent.insertBefore(spec.script,me);
-		}
-	
 		var spec = synchronous.shift(),
 			next,
 			first = spec;
-		while(spec && (next = synchronous.shift())) {
-			spec.next = next;
+		while(spec && (next = synchronous.shift())) { // set synchronous to run in sequence
+			Object.defineProperty(spec,"next",{value:next});
 			spec = next;
 		}
 		if(first) {
-			load(first);
+			setTimeout(() => load(first)); // use timeout so promises can be returned
 		}
 		while(spec = asynchronous.shift()) {
 			load(spec);
@@ -93,7 +120,8 @@
 		return promises;
 	}
 	
-	window.scriptswitch = scriptswitch;
+	if(typeof(module)!=="undefined") module.exports = scriptswitch;
+	if(typeof(window)!=="undefined") window.scriptswitch = scriptswitch;
 }).call(this);
 
 	

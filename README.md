@@ -1,4 +1,4 @@
-# scriptswitch v0.1.3
+# scriptswitch v0.1.4
 
 Super simple (and tiny, 684 bytes gzipped) conditional script loading manager for browsers and NodeJS.
 
@@ -32,7 +32,7 @@ scriptswitch({
 	"core.js": {
 		async:false
 	},
-	"patches.js": (ev) => {
+	"patches.js": (() => {
 		if(<some condition under which patches are needed>) {
 			return {
 				async:false,
@@ -40,11 +40,11 @@ scriptswitch({
 			}
 		}
 		return null;
-	},
+	})(),
 	"lazyloads.js": {
 		async: true
 	},
-	"secondary.js": {}; // assumes standard loading, i.e. async:false
+	"secondary.js": {} // assumes standard loading, i.e. async:false
 })
 ```
 
@@ -70,6 +70,8 @@ scriptswitch({
 Under the hood, all NodeJS scripts load synchronously; however, those marked as `async:true` will fire their `onload` event handlers asynchronously.
 
 # Release History (reverse chronological order)
+
+2018-08-06 v0.1.4 Documentation corrections.
 
 2018-08-06 v0.1.3 Added NodeJS support.
 

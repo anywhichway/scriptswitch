@@ -1,6 +1,6 @@
 {
 	"name": "scriptswitch",
-	"version": "0.1.3",
+	"version": "0.1.4",
 	"description": "Super simple (and tiny, 684 bytes gzipped) conditional script loading manager for browsers and NodeJS.",
 	"private": false,
 	"isomorphic": false,
