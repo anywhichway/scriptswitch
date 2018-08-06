@@ -1,25 +1,30 @@
-# scriptswitch v0.1.2
+# scriptswitch v0.1.3
 
-Super simple (and tiny, 417 bytes gzipped) conditional script loading manager for browsers.
+Super simple (and tiny, 684 bytes gzipped) conditional script loading manager for browsers and NodeJS.
 
 Handles all the standard script attributes, e.g. `async`, `defer`, etc.
 
-Supports sequenced synchronous loading for scripts that are dependent on other scripts.
+Supports asynchronous loading or sequenced synchronous loading for scripts that are dependent on other scripts.
 
 # Installation
 
 `npm install scriptswitch`
 
-Currently only browser usage is supported, use the file `scriptswitch.js` in the browser directory.
+Use the file `scriptswitch.js` in the browser directory for browsers.
 
 ```javascript
 <script src="scriptswitch.js"></script>
 ```
 
+Use regular NodeJS syntax for NodeJS:
+
+```javascript
+const scriptswitch = require("scriptswitch");
+```
+
 # Usage
 
-Just pass a dynamically built configuration object into `scriptswitch`. Each property should be a path to a script file.
-If the value is `null`, the script will not be loaded. Otherwise, the configuration options you provide will be used to
+For browsers, just pass a dynamically built configuration object into `scriptswitch`. Each property should be a path to a script file. If the value is `null`, the script will not be loaded. Otherwise, the configuration options you provide will be used to
 load the script.
 
 ```javascript
@@ -51,8 +56,22 @@ The `async:false` scripts complete loading in the order provided. Other scripts 
 Promise.all(scriptswitch(<config object>)).then(arrayOfScriptDOMElements => ...);
 ```
 
+For NodeJS, provide an additional options argument `{scope:<usually 'this'>}` and for each script add a property `as` with the value being the variable to which you would like the script export bound, e.g.
+
+```javascript
+scriptswitch({
+		"util": {
+			as:"u"; // same as 'var u = require("util")'
+		}
+	},
+	{scope:this})
+```
+
+Under the hood, all NodeJS scripts load synchronously; however, those marked as `async:true` will fire their `onload` event handlers asynchronously.
 
 # Release History (reverse chronological order)
+
+2018-08-06 v0.1.3 Added NodeJS support.
 
 2018-08-06 v0.1.2 Added support for older browsers not having Promises.
 

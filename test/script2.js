@@ -1,2 +1,2 @@
 var script2 = true;
-script1 = false;
+if(typeof(module)!="undefined") module.exports = script2;
