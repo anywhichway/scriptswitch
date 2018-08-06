@@ -1,4 +1,4 @@
-# scriptswitch v0.1.1
+# scriptswitch v0.1.2
 
 Super simple (and tiny, 417 bytes gzipped) conditional script loading manager for browsers.
 
@@ -53,6 +53,8 @@ Promise.all(scriptswitch(<config object>)).then(arrayOfScriptDOMElements => ...)
 
 
 # Release History (reverse chronological order)
+
+2018-08-06 v0.1.2 Added support for older browsers not having Promises.
 
 2018-08-05 v0.1.1 Documentation enhancements.
 
