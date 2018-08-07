@@ -2,6 +2,14 @@
 // License: MIT
 (function() {
 	var Promise;
+	if(!Object.assign) {
+		Object.assign = function(target,source) {
+			for(var key in source) {
+				target[key] = source[key];
+			}
+			return target;
+		}
+	}
 	if(typeof(Promise)==="undefined") {
 		// https://gist.github.com/unscriptable/814052
 		// matthieusieben commented on Aug 8, 2017
@@ -15,7 +23,7 @@
 		  };
 		  cb(complete.bind(u, 0), complete.bind(u, 1));
 		  this.then = then;
-		  this.catch = then.bind(u, u)
+		  this["catch"] = then.bind(u, u);
 		  function then(success, error) {
 		    return new Promise(function (resolve, reject) {
 		      if (q) q.push([ done.bind(u, success), done.bind(u, error) ]);
@@ -32,17 +40,17 @@
 	
 	var isBrowser = typeof(window)!=="undefined";
 	
-	function scriptswitch(scripts,{scope}={}) {
+	function scriptswitch(scripts,scope) {
 		scripts || (scripts={});
+		scope || (scope={});
 		var promises = [],
 			asynchronous = [],
 			synchronous = [],
-			paths = Object.keys(scripts),
 			me = isBrowser ? document.getElementById("scriptswitch") : null,
 			parent = me ? me.parentNode  : null;
 		function load(spec) {
 			for(var key in spec) {
-				if(key!=="script") {
+				if(key!=="script" && key!=="onload") {
 					var value = spec[key];
 					if(value!=false && isBrowser) spec.script.setAttribute(key,value);
 				}
@@ -51,7 +59,7 @@
 			if(spec.next) {
 				var onload = spec.onload;
 				if(isBrowser) {
-					spec.script.onload = (ev) => {
+					spec.script.onload = function(ev) {
 						onload.call(spec.script,ev);
 						load(spec.next);
 					}
@@ -65,11 +73,11 @@
 			if(isBrowser) {
 				parent.insertBefore(spec.script,me); 
 			} else if(spec.onload) {
-				if(spec.async) setTimeout(() => spec.onload({target:spec})); // make it look async
+				if(spec.async) setTimeout(function() { spec.onload({target:spec}); }); // make it look async
 				else spec.onload({target:spec});
 			}
 		}
-		for(const path in scripts) {
+		for(var path in scripts) {
 			if(!scripts[path]) continue;
 			promises.push(new Promise(function(resolve) {
 				var spec = Object.assign({},scripts[path]),
@@ -85,9 +93,9 @@
 						throw new Error("'import' is a required script property for NodeJS use")
 					}
 					scope[spec.as] = require(require("path").resolve(__dirname,spec.src));
-					spec.script = `${scope[spec.as]}`;
+					spec.script = scope[spec.as]+"";
 				}
-				spec.onload = (ev) => {
+				spec.onload = function(ev) {
 					if(isBrowser) {
 						resolve(spec.script);
 					} else {
@@ -112,7 +120,7 @@
 			spec = next;
 		}
 		if(first) {
-			setTimeout(() => load(first)); // use timeout so promises can be returned
+			setTimeout(function() { load(first); } ); // use timeout so promises can be returned
 		}
 		while(spec = asynchronous.shift()) {
 			load(spec);

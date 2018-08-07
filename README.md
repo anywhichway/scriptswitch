@@ -1,10 +1,12 @@
-# scriptswitch v0.1.4
+# scriptswitch v0.1.5
 
-Super simple (and tiny, 684 bytes gzipped) conditional script loading manager for browsers and NodeJS.
+Super simple (and tiny, 700 bytes gzipped) conditional script loading manager for browsers and NodeJS.
 
 Handles all the standard script attributes, e.g. `async`, `defer`, etc.
 
 Supports asynchronous loading or sequenced synchronous loading for scripts that are dependent on other scripts.
+
+Basic functionality works as far back as IE 10, Safari 5.1, Firefox 8, Chrome 10. `async` and `defer` only work if the browser supports them.
 
 # Installation
 
@@ -74,6 +76,8 @@ Under the hood, all NodeJS scripts load synchronously; however, those marked as 
 [Eclipse](https://www.eclipse.org/), [Mocha](https://mochajs.org/), [Chai](www.chaijs.com), and [Browserstack](https://www.browserstack.com).
 
 # Release History (reverse chronological order)
+
+2018-08-07 v0.1.5 Older browser compatibility changes.
 
 2018-08-06 v0.1.4 Documentation corrections.
 
