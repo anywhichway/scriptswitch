@@ -69,6 +69,10 @@ scriptswitch({
 
 Under the hood, all NodeJS scripts load synchronously; however, those marked as `async:true` will fire their `onload` event handlers asynchronously.
 
+# Developed and Tested With
+
+[Eclipse](https://www.eclipse.org/), [Mocha](https://mochajs.org/), [Chai](www.chaijs.com), and [Browserstack](https://www.browserstack.com).
+
 # Release History (reverse chronological order)
 
 2018-08-06 v0.1.4 Documentation corrections.
